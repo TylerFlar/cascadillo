@@ -1,21 +1,14 @@
 [project]
 name = "cascadillo"
 version = "0.0.1"
-description = "Cost-aware LLM router (Milestone 0 scaffold)"
+description = "Cost-aware LLM router"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 authors = [{ name = "cascadillo" }]
 license = { file = "LICENSE" }
 dependencies = [
-  "fastapi>=0.112",
-  "uvicorn[standard]>=0.30",
-]
-
-[project.optional-dependencies]
-dev = [
-  "pytest>=8.0",
-  "httpx>=0.27",
-  "pytest-asyncio>=0.23",
+  "fastapi>=0.116.1",
+  "uvicorn>=0.35.0",
 ]
 
 [build-system]
@@ -29,3 +22,57 @@ package = true
 addopts = "-q"
 pythonpath = ["src"]
 asyncio_mode = "auto"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "ruff>=0.12.9",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+exclude = [
+  ".venv",
+  "build",
+  "dist",
+  "**/__pycache__",
+]
+
+[tool.ruff.lint]
+# Pragmatic selection inspired by common best practices.
+select = [
+  "E",    # pycodestyle (errors)
+  "W",    # pycodestyle (warnings)
+  "F",    # pyflakes
+  "I",    # isort (imports)
+  "N",    # pep8-naming
+  "UP",   # pyupgrade (modernize for target-version)
+  "B",    # flake8-bugbear
+  "A",    # flake8-builtins (avoid shadowing builtins)
+  "C4",   # flake8-comprehensions
+  "COM",  # flake8-commas
+  "ISC",  # flake8-implicit-str-concat
+  "PT",   # flake8-pytest-style
+  "RUF",  # Ruff-specific rules (incl. unused noqa)
+]
+ignore = [
+  "E501",   # Line length handled via editor/formatter; allow long strings when needed
+  "B008",   # FastAPI dependency callables as defaults are common; avoid false positives
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["cascadillo"]
+combine-as-imports = true
+lines-between-types = 1
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+# Keep pydocstyle settings for future use without enforcing yet (we didn't enable D)
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+

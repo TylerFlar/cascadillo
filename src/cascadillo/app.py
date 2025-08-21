@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
+
 from .middleware import RequestIDMiddleware, request_logger_middleware
 
 
@@ -31,7 +32,7 @@ def create_app() -> FastAPI:
                 "version": app.version,
                 "message": "Milestone 0 running",
                 "request_id": request.headers.get("x-request-id"),
-            }
+            },
         )
 
     return app

@@ -1,12 +1,13 @@
 import time
 import uuid
-from typing import Callable, Awaitable
+
+from collections.abc import Awaitable, Callable
 
 from fastapi import Request, Response
 
 
 class RequestIDMiddleware:
-    def __init__(self, app):
+    def __init__(self, app) -> None:
         self.app = app
 
     async def __call__(self, scope, receive, send):
@@ -14,7 +15,7 @@ class RequestIDMiddleware:
             await self.app(scope, receive, send)
             return
 
-        async def add_request_id_send(event):
+        async def add_request_id_send(event) -> None:
             if event["type"] == "http.response.start":
                 headers = event.get("headers", [])
                 # Keep incoming x-request-id or generate a new one
@@ -45,14 +46,10 @@ def _header(headers, name: str) -> str | None:
 
 async def request_logger_middleware(request: Request, call_next: Callable[[Request], Awaitable[Response]]):
     t0 = time.perf_counter()
-    req_id = request.headers.get("x-request-id") or str(uuid.uuid4())
-    path = request.url.path
-    method = request.method
+    request.headers.get("x-request-id") or str(uuid.uuid4())
     response: Response | None = None
     try:
-        response = await call_next(request)
-        return response
+        return await call_next(request)
     finally:
-        dt_ms = int((time.perf_counter() - t0) * 1000)
-        status = getattr(response, "status_code", 0) if response is not None else 0
-        print(f"req_id={req_id} {method} {path} status={status} dt_ms={dt_ms}")
+        int((time.perf_counter() - t0) * 1000)
+        getattr(response, "status_code", 0) if response is not None else 0

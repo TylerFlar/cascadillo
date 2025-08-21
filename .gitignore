@@ -23,6 +23,8 @@ build/
 *.egg-info/
 .venv/
 .python-version
+.ruff_cache/
+uv.lock
 
 # uv cache (global is in %APPDATA%/uv; project-level caches can appear)
 .uv/
